@@ -24,8 +24,13 @@ on getActiveWindowSizes()
 	tell application "System Events"
 		set activeApp to name of first application process whose frontmost is true
 		tell process activeApp
-			set positionOfCurrentApp to position of window 1
-			set sizeOfCurrentApp to size of window 1
+			if (name of window 1) = "Picture in Picture" then
+				set activeWindow to window 2
+			else
+				set activeWindow to window 1
+			end if
+			set positionOfCurrentApp to position of activeWindow
+			set sizeOfCurrentApp to size of activeWindow
 		end tell
 	end tell
 	return {item 1 of positionOfCurrentApp, item 2 of positionOfCurrentApp, item 1 of sizeOfCurrentApp, item 2 of sizeOfCurrentApp}
@@ -38,7 +43,12 @@ on getActiveSceenIndex()
 		set activeApp to name of first application process whose frontmost is true
 		set displayName to display name of desktop 1
 		tell process activeApp
-			set positionOfCurrentApp to position of window 1
+			if (name of window 1) = "Picture in Picture" then
+				set activeWindow to window 2
+			else
+				set activeWindow to window 1
+			end if
+			set positionOfCurrentApp to position of activeWindow
 			set positionXOfCurrentApp to (item 1 of positionOfCurrentApp)
 			set positionYOfCurrentApp to (item 2 of positionOfCurrentApp)
 			set ScreenX to item 1 of item 1 of screensSizes
@@ -86,8 +96,13 @@ on resizeApp(positionX, positionY, sizeX, sizeY)
 	tell application "System Events"
 		set activeApp to name of first application process whose frontmost is true
 		tell process activeApp
-			set position of window 1 to {positionX, positionY}
-			set size of window 1 to {sizeX, sizeY}
+		if (name of window 1) = "Picture in Picture" then
+				set activeWindow to window 2
+			else
+				set activeWindow to window 1
+			end if
+			set position of activeWindow to {positionX, positionY}
+			set size of activeWindow to {sizeX, sizeY}
 		end tell
 	end tell
 end resizeApp
@@ -267,7 +282,7 @@ on run(argv)
 		set sizeY to (((item 4 of args) / 100) - ((item 2 of args) / 100)) * (item 2 of screenSize)
 	end if
 	
-	if sizeX < 500 then
+	if sizeX < 300 then
 		return "sizeX too small"
 	end if
 	if sizeY < 100 then
